@@ -27,16 +27,25 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public JwtAuthenticationResponse signin(@RequestBody SignInRequest request) {
-        return authenticationService.signin(request);
+    public ResponseEntity<JwtAuthenticationResponse> login(@RequestBody SignInRequest request) {
+        try {
+            JwtAuthenticationResponse response = authenticationService.login(request);
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
     }
 
     //Add a user
     @PostMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<JwtAuthenticationResponse> addUser (@RequestBody User user){
-        JwtAuthenticationResponse jwtAuthenticationResponse = authenticationService.addUser(user);
-        return new ResponseEntity(jwtAuthenticationResponse, HttpStatus.OK);
+        try{
+            JwtAuthenticationResponse jwtAuthenticationResponse = authenticationService.addUser(user);
+            return new ResponseEntity(jwtAuthenticationResponse, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

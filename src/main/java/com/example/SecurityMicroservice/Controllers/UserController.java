@@ -59,19 +59,20 @@ public class UserController {
 
 //Get all Users with Sort and Pagination
     @GetMapping("")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<Page<User>> getCustomersByPageWithSort(
-            @RequestParam("offset") int offset,
-            @RequestParam("pageSize") int pageSize,
-            @RequestParam("field") String field,
-            @RequestParam("sort") String sort
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+            @RequestParam(name = "field", defaultValue = "id") String field,
+            @RequestParam(name = "sort", defaultValue = "DESC") String sort
     ) {
-        Page<User> users = userService.findUsersWithPagination(offset, pageSize, field, sort);
+        Page<User> users = userService.findUsersWithPagination(page, pageSize, field, sort);
         return new ResponseEntity<>(users, HttpStatus.OK);
-    }
+    }//Search for access denied handler
 
 //Get User with Id
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<UserDTO> getUserById(@PathVariable String id){
         Optional<User> user = userService.getUserById(id);
         if(user.isPresent()){

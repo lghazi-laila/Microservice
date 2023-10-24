@@ -24,6 +24,7 @@ public class UserMapper {
 
         PropertyMap<User, UserDTO> propertyMap = new PropertyMap<> (){
             protected void configure() {
+
                 map(source.getUsername()).setUserName(null);
             }
         };

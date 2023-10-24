@@ -60,13 +60,13 @@ public class UserService {
     }
 
 //Get All users with pagination
-    public Page<User> findUsersWithPagination(int offset, int page, String field, String sort) {
+    public Page<User> findUsersWithPagination(int page, int pageSize, String field, String sort) {
 
         Sort.Direction direction = Sort.Direction.DESC;
         if ("ASC".equalsIgnoreCase(sort)) {
             direction = Sort.Direction.ASC;
         }
-        return userRepository.findAll(PageRequest.of(offset, page, Sort.by(direction, field)));
+        return userRepository.findAll(PageRequest.of(page, pageSize, Sort.by(direction, field)));
     }
 
 //Get User by Id
@@ -84,6 +84,16 @@ public class UserService {
         }
 
         return new ResponseEntity(HttpStatus.NOT_FOUND);
+    }
+
+//Check if user exists by userName
+    public boolean checkUserByUsername(String userName){
+        return userRepository.existsByUserName(userName);
+    }
+
+    //Check if user exists by email
+    public boolean checkUserByEmail(String userName){
+        return userRepository.existsByEmail(userName);
     }
 
 }
