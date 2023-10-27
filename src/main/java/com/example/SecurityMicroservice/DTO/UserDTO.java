@@ -1,8 +1,11 @@
 package com.example.SecurityMicroservice.DTO;
 
+import com.example.SecurityMicroservice.Models.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -13,5 +16,5 @@ public class UserDTO {
     private String email;
     private String userName;
     private String password;
-    private String role;
+    //private Set<Role> role;
 }

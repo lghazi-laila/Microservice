@@ -1,8 +1,6 @@
 package com.example.SecurityMicroservice.Controllers;
 
-import com.example.SecurityMicroservice.DTO.JwtAuthenticationResponse;
 import com.example.SecurityMicroservice.DTO.UserDTO;
-import com.example.SecurityMicroservice.Models.Role;
 import com.example.SecurityMicroservice.Models.User;
 import com.example.SecurityMicroservice.Services.UserService;
 import com.example.SecurityMicroservice.Utils.UserMapper;
@@ -54,7 +52,7 @@ public class UserController {
         if(users.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity(users, HttpStatus.OK);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
 //Get all Users with Sort and Pagination
@@ -84,8 +82,66 @@ public class UserController {
 //Delete User by Id
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity deleteUserById(@PathVariable String id){
+    public ResponseEntity<String> deleteUserById(@PathVariable String id){
         return userService.deleteUserById(id);
     }
 
 }
+
+//----------------------------------------------------------------
+
+
+
+
+
+//---------------------------------------------------------------
+
+//    @PostMapping("/{userId}/addRole")
+//    public ResponseEntity<User> addRoleToUser(@PathVariable Long userId, @RequestParam String roleName) {
+//        Optional<User> userOptional = userService.getUserById(userId);
+//        Optional<Role> roleOptional = roleService.getRoleByName(roleName);
+//
+//        if (userOptional.isPresent() && roleOptional.isPresent()) {
+//            User user = userOptional.get();
+//            Role role = roleOptional.get();
+//
+//            // Add the role to the user
+//            user.addRole(role);
+//            userService.saveUser(user);
+//
+//            return ResponseEntity.ok(user);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
+
+//-----------------------------------------------------------
+
+
+//    @DeleteMapping("/{userId}/removeRole")
+//    public ResponseEntity<User> removeRoleFromUser(@PathVariable Long userId, @RequestParam String roleName) {
+//        Optional<User> userOptional = userService.getUserById(userId);
+//        Optional<Role> roleOptional = roleService.getRoleByName(roleName);
+//
+//        if (userOptional.isPresent() && roleOptional.isPresent()) {
+//            User user = userOptional.get();
+//            Role role = roleOptional.get();
+//
+//            // Remove the role from the user
+//            user.removeRole(role);
+//            userService.saveUser(user);
+//
+//            return ResponseEntity.ok(user);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
+
+
+
+
+
+
+
+
+

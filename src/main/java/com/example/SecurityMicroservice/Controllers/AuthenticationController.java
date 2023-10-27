@@ -6,6 +6,7 @@ import com.example.SecurityMicroservice.DTO.SignUpRequest;
 import com.example.SecurityMicroservice.Models.User;
 import com.example.SecurityMicroservice.Services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,12 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
+    @Autowired
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/signup")
-    public JwtAuthenticationResponse signup(@RequestBody SignUpRequest request) {
-        return authenticationService.signup(request);
-    }
+//    @PostMapping("/signup")
+//    public JwtAuthenticationResponse signup(@RequestBody SignUpRequest request) {
+//        return authenticationService.signup(request);
+//    }
 
     @PostMapping("/login")
     public ResponseEntity<JwtAuthenticationResponse> login(@RequestBody SignInRequest request) {
@@ -38,11 +40,11 @@ public class AuthenticationController {
 
     //Add a user
     @PostMapping("/users")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<JwtAuthenticationResponse> addUser (@RequestBody User user){
         try{
             JwtAuthenticationResponse jwtAuthenticationResponse = authenticationService.addUser(user);
-            return new ResponseEntity(jwtAuthenticationResponse, HttpStatus.OK);
+            return new ResponseEntity<>(jwtAuthenticationResponse, HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }

@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import com.example.SecurityMicroservice.DTO.SignUpRequest;
 import com.example.SecurityMicroservice.DTO.SignInRequest;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -30,6 +33,10 @@ public class AuthenticationService {
         if(userService.checkUserByEmail(request.getEmail())){
             throw new IllegalArgumentException("Email is already taken.");
         }
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(new Role("ADMIN"));
+
         var user = User
                 .builder()
                 .firstName(request.getFirstName())
@@ -37,7 +44,7 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .userName(request.getUserName())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.ROLE_USER)
+                .role(roles)
                 .active(true) //to check
                 .build();
 
@@ -79,6 +86,10 @@ public class AuthenticationService {
         if(userService.checkUserByEmail(user.getEmail())){
             throw new IllegalArgumentException("Email is already taken.");
         }
+        Set<Role> roles = new HashSet<>();
+        roles.add(new Role("USER"));
+        roles.add(new Role("CUSTOMER"));
+
         var newUser = User
                 .builder()
                 .firstName(user.getFirstName())
@@ -86,7 +97,8 @@ public class AuthenticationService {
                 .email(user.getEmail())
                 .userName(user.getUsername())
                 .password(passwordEncoder.encode(user.getPassword()))
-                .role(Role.ROLE_USER)
+                .role(roles)
+                .validAccount(true)
                 .active(true)
                 .build();
 
@@ -94,4 +106,32 @@ public class AuthenticationService {
         var jwt = jwtService.generateToken(newUser);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
+
+    public JwtAuthenticationResponse addCustomer(User user){
+        if(userService.checkUserByUsername(user.getUsername())){
+            throw new IllegalArgumentException("Username is already taken.");
+        }
+        if(userService.checkUserByEmail(user.getEmail())){
+            throw new IllegalArgumentException("Email is already taken.");
+        }
+        Set<Role> roles = new HashSet<>();
+        roles.add(new Role("CUSTOMER"));
+
+        var newUser = User
+                .builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .userName(user.getUsername())
+                .password(passwordEncoder.encode(user.getPassword()))
+                .role(roles)
+                .validAccount(false)
+                .active(true)
+                .build();
+
+        user = userService.save(newUser);
+        var jwt = jwtService.generateToken(newUser);
+        return JwtAuthenticationResponse.builder().token(jwt).build();
+    }
+
 }
