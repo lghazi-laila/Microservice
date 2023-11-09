@@ -12,6 +12,9 @@ public class UserMapper {
         PropertyMap<UserDTO, User> propertyMap = new PropertyMap<> (){
             protected void configure() {
                 map(source.getUserName()).setUserName(null);
+//                map().setRoles(source.getRoles().stream()
+//                        .map(role -> modelMapper.map(role, Role.class))
+//                        .collect(Collectors.toSet()));
             }
         };
 
@@ -26,6 +29,9 @@ public class UserMapper {
             protected void configure() {
 
                 map(source.getUsername()).setUserName(null);
+//                map().setRoles(source.getRoles().stream()
+//                        .map(role -> modelMapper.map(role, RoleDTO.class))
+//                        .collect(Collectors.toList()));
             }
         };
 

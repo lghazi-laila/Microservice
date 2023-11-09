@@ -1,6 +1,7 @@
 package com.example.SecurityMicroservice.Models;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -57,11 +58,24 @@ public class User implements UserDetails {
     @Column(name = "active")
     private Boolean active;
 
+    @ManyToMany(fetch=FetchType.EAGER, cascade=CascadeType.MERGE)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id")
+    )
+    private Set<Role> roles = new HashSet<>();
+
+    //There is no lombok generated mathod to get userName
+    //This is different from the getusername() method bellow as it returns the actual userName field
+    public String getUserName() {
+        return userName;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
 
-        for (Role role : role) {
+        for (Role role : roles) {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
         }
 
@@ -70,7 +84,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return id;
+        return email;
     }
 
     @Override
@@ -93,9 +107,4 @@ public class User implements UserDetails {
         return true;
     }
 
-    @ManyToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"))
-    private Set<Role> role = new HashSet<>();
 }

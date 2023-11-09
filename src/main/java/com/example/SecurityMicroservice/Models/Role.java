@@ -1,6 +1,8 @@
 package com.example.SecurityMicroservice.Models;
 
 
+import com.example.SecurityMicroservice.Utils.RoleSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,20 +14,19 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
+@Table(name = "roles")
+@JsonSerialize(using = RoleSerializer.class)
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(unique = true)
     private String name;
 
-    //@ManyToMany(mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
-
     public Role(String name) {
         this.name = name;
     }
-
 }

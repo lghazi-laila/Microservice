@@ -2,15 +2,15 @@ package com.example.SecurityMicroservice.Config;
 
 import com.example.SecurityMicroservice.Models.User;
 import com.example.SecurityMicroservice.Models.Role;
+import com.example.SecurityMicroservice.Repositories.RoleRepository;
 import com.example.SecurityMicroservice.Repositories.UserRepository;
+import com.example.SecurityMicroservice.Services.RoleService;
 import com.example.SecurityMicroservice.Services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.HashSet;
 import java.util.Set;
 
 @Component
@@ -21,19 +21,23 @@ public class SeedDataConfig implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final RoleRepository roleRepository;
+    private final RoleService roleService;
 
     @Override
     public void run(String... args) throws Exception {
 
+        if(roleRepository.count() == 0){
+            roleService.createRole("ADMIN");
+            roleService.createRole("MANAGER");
+            roleService.createRole("CUSTOMER");
+        }
+
         if (userRepository.count() == 0) {
 
-            // Create a Set<Role> to store the roles
-            Set<Role> roles = new HashSet<>();
-            roles.add(new Role("ADMIN"));
-            roles.add(new Role("USER"));
-            roles.add(new Role("CUSTOMER"));
-
-            
+            Role adminRole = roleService.getRoleByName("ADMIN");
+            Role managerRole = roleService.getRoleByName("MANAGER");
+            Role customerRole = roleService.getRoleByName("CUSTOMER");
 
             User admin = User
                     .builder()
@@ -42,7 +46,7 @@ public class SeedDataConfig implements CommandLineRunner {
                     .userName("admin")
                     .email("admin@admin.com")
                     .password(passwordEncoder.encode("password"))
-                    .role(roles)
+                    .roles(Set.of(adminRole,managerRole,customerRole))
                     .validAccount(true)
                     .active(true)
                     .build();
