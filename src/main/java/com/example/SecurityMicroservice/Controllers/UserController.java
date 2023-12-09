@@ -41,9 +41,9 @@ public class UserController {
     }
 
     //Get all Users with Sort and Pagination
-    @GetMapping("/test")
+    @GetMapping("/sort")
     @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
-    public ResponseEntity<?> getCustomersByPageWithSortAndField(
+    public ResponseEntity<?> getUsersByPageWithSortAndField(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
             @RequestParam(name = "field", defaultValue = "id") String field,
@@ -57,7 +57,7 @@ public class UserController {
     //Retrieve all the users list, with a limit of 10 users per page.
     @GetMapping("")
     @PreAuthorize("hasAnyAuthority('MANAGER','ADMIN')")
-    public ResponseEntity<?> getCustomersByPageWithSort (
+    public ResponseEntity<?> getUserByPageWithSort (
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "sort", defaultValue = "DESC") String sort
     ) {
@@ -102,7 +102,7 @@ public class UserController {
     }
 
     //Update User
-    @PostMapping ("/{id}")
+    @PutMapping ("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> updateCustomer(
             @PathVariable String id,
